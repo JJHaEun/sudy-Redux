@@ -36,9 +36,14 @@
         return newState; // 변경된 값 return
         console.log(newState);
       }
+      const store = Redux.createStore(
+        // redux의 store에 초기값이 지정되고
+        // console.log(store.getState()); // store에 저장된 state값 가져옴!!
 
-      const store = Redux.createStore(reducer); // redux의 store에 초기값이 지정되고
-      // console.log(store.getState()); // store에 저장된 state값 가져옴!!
+        reducer,
+        window.__REDUX_DEVTOOLS_EXTENSION__ &&
+          window.__REDUX_DEVTOOLS_EXTENSION__() // redux dev tools 사용하기 위해 추가한 코드
+      );
 
       function red() {
         const state = store.getState(); //state가져오기

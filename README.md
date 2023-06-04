@@ -131,7 +131,7 @@ function reducer(state, action) {
       이렇게 같은 함수로 state를 변경해보았다.
       store.getState() 로 생성한 state에서 기존 값을 가져오고,
        store.dispatch({type:'CHANGE_COLOR',color:'green'})로 state 업데이트를 하고 이것은 reducer함수의 action으로 들어가게된다.
-       그럼 action이 해당타입일경우에 기존state객체의 값을 복사하고, 이것을 action의 값으로 덮어씌우면 state가 바뀌는 형식이다.
+       그럼 action이 해당타입일경우에 기존state객체의 값을 복사(원본을 변경하면 안되기에=> redux의 불변성을 해침)하고, 이것을 action의 값으로 덮어씌우면 state가 바뀌는 형식이다.
 ````
 
 그렇다면 redux를 사용하지 않았을때와 비교해보자.
