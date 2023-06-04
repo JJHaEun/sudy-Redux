@@ -16,9 +16,10 @@
   </head>
   <body>
     <div id="red"></div>
+    <div id="blue"></div>
+    <div id="green"></div>
     <script>
       function reducer(state, action) {
-        // 기존의 state값, 그리고 action값을 받음.
         console.log(state, action);
         let newState;
         if (state === undefined) {
@@ -27,7 +28,7 @@
         }
 
         if (action.type === "CHANGE_COLOR") {
-          newState = Object.assign({}, state, { color: "red" }); // 객체 복제 첫번째 인자는 반드시 빈객체, 그 다음 인자로는 빈객체에 복제할 속성을 가진 객체, 그다음도...
+          newState = Object.assign({}, state, { color: action.color }); // 객체 복제 첫번째 인자는 반드시 빈객체, 그 다음 인자로는 빈객체에 복제할 속성을 가진 객체, 그다음도...
           // 그럼 하나의 객체에 속성들이 복제되어 들어감(state라는 객체=> {color:"yellow"} 같은 키면 덮어쓰기됨.)
           // 복제해서 그 결과를 return해야
           // redux의 시간여행등의 기능들을 최대한으로 활용이 가능하다.
@@ -53,6 +54,36 @@
       // subscribe()에 render를 등록해 놓으면 됨.
       store.subscribe(red); // 즉, state값이 바뀔때마다 red함수 호출(ui에 반영하기)
       red();
+
+      function blue() {
+        const state = store.getState(); //state가져오기
+        document.querySelector("#blue").innerHTML = `
+                      <div class="container" id="component_blue" style="background-color:${state.color}">
+                              <h1>blue</h1>
+                              <input type="button" value="fire" onclick="
+                              store.dispatch({type:'CHANGE_COLOR',color:'blue'})
+                              "/>
+                      </div>`;
+      }
+      // state값이 바뀔때마다 이 함수를 호출하게하려면
+      // subscribe()에 render를 등록해 놓으면 됨.
+      store.subscribe(blue); // 즉, state값이 바뀔때마다 red함수 호출(ui에 반영하기)
+      blue();
+
+      function green() {
+        const state = store.getState(); //state가져오기
+        document.querySelector("#green").innerHTML = `
+                      <div class="container" id="component_green" style="background-color:${state.color}">
+                              <h1>green</h1>
+                              <input type="button" value="fire" onclick="
+                              store.dispatch({type:'CHANGE_COLOR',color:'green'})
+                              "/>
+                      </div>`;
+      }
+      // state값이 바뀔때마다 이 함수를 호출하게하려면
+      // subscribe()에 render를 등록해 놓으면 됨.
+      store.subscribe(green); // 즉, state값이 바뀔때마다 red함수 호출(ui에 반영하기)
+      green(); // 처음에는 무조건 실행
     </script>
   </body>
 </html>
