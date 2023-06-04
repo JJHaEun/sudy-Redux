@@ -19,24 +19,28 @@
     <script>
       function reducer(state, action) {
         // 기존의 state값, 그리고 action값을 받음.
-        console.log("states", state, action);
+        console.log(state, action);
+        let newState;
         if (state === undefined) {
           // state값이 정의되지 않은 최초일때(초기화를 위해 최초로 실행되는 reducer에 대한 호출.)
           return { color: "yellow" }; // 기본값 설정. 이렇게 return 해주면
         }
-        let newState;
+
         if (action.type === "CHANGE_COLOR") {
           newState = Object.assign({}, state, { color: "red" }); // 객체 복제 첫번째 인자는 반드시 빈객체, 그 다음 인자로는 빈객체에 복제할 속성을 가진 객체, 그다음도...
           // 그럼 하나의 객체에 속성들이 복제되어 들어감(state라는 객체=> {color:"yellow"} 같은 키면 덮어쓰기됨.)
           // 복제해서 그 결과를 return해야
           // redux의 시간여행등의 기능들을 최대한으로 활용이 가능하다.
         }
-        return newState;
+        return newState; // 변경된 값 return
+        console.log(newState);
       }
+
       const store = Redux.createStore(reducer); // redux의 store에 초기값이 지정되고
       // console.log(store.getState()); // store에 저장된 state값 가져옴!!
-      const state = store.getState();
+
       function red() {
+        const state = store.getState(); //state가져오기
         document.querySelector("#red").innerHTML = `
                       <div class="container" id="component_red" style="background-color:${state.color}">
                               <h1>red</h1>
@@ -45,6 +49,9 @@
                               "/>
                       </div>`;
       }
+      // state값이 바뀔때마다 이 함수를 호출하게하려면
+      // subscribe()에 render를 등록해 놓으면 됨.
+      store.subscribe(red); // 즉, state값이 바뀔때마다 red함수 호출(ui에 반영하기)
       red();
     </script>
   </body>
