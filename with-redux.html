@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.1/redux.js"></script>
+
+    <style>
+      .container {
+        border: 5px solid black;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="red"></div>
+    <script>
+      function reducer(state, action) {
+        // 기존의 state값, 그리고 action값을 받음.
+        console.log("states", state, action);
+        if (state === undefined) {
+          // state값이 정의되지 않은 최초일때(초기화를 위해 최초로 실행되는 reducer에 대한 호출.)
+          return { color: "yellow" }; // 기본값 설정. 이렇게 return 해주면
+        }
+        let newState;
+        if (action.type === "CHANGE_COLOR") {
+          newState = Object.assign({}, state, { color: "red" }); // 객체 복제 첫번째 인자는 반드시 빈객체, 그 다음 인자로는 빈객체에 복제할 속성을 가진 객체, 그다음도...
+          // 그럼 하나의 객체에 속성들이 복제되어 들어감(state라는 객체=> {color:"yellow"} 같은 키면 덮어쓰기됨.)
+          // 복제해서 그 결과를 return해야
+          // redux의 시간여행등의 기능들을 최대한으로 활용이 가능하다.
+        }
+        return newState;
+      }
+      const store = Redux.createStore(reducer); // redux의 store에 초기값이 지정되고
+      // console.log(store.getState()); // store에 저장된 state값 가져옴!!
+      const state = store.getState();
+      function red() {
+        document.querySelector("#red").innerHTML = `
+                      <div class="container" id="component_red" style="background-color:${state.color}">
+                              <h1>red</h1>
+                              <input type="button" value="fire" onclick="
+                              store.dispatch({type:'CHANGE_COLOR',color:'red'})
+                              "/>
+                      </div>`;
+      }
+      red();
+    </script>
+  </body>
+</html>
