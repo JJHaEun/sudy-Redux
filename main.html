@@ -7,23 +7,51 @@
     <title>Redux를 사용한 웹페이지</title>
   </head>
   <body>
-    <header>
-      <h1>WEB</h1>
-      Hello, WEB!!
-    </header>
+    <div id="subject"></div>
+    <div id="toc"></div>
+    <div id="control"></div>
+    <div id="content"></div>
+    <script>
+      function subject() {
+        document.getElementById("subject").innerHTML = `
+            <header>
+            <h1>WEB</h1>
+            Hello, WEB!!
+            </header>
+            
+            `;
+      }
+      function TOC() {
+        // table of content의 준말로 목록을 나타낼떼 주로사용하는 말
+        document.getElementById("toc").innerHTML = `
     <nav>
       <ol>
         <li><a href="1.html">HTML</a></li>
         <li><a href="2.html">CSS</a></li>
       </ol>
     </nav>
-    <article>
-      <ul>
-        <li><a href="/create">create</a></li>
-        <li><button>delete</button></li>
-      </ul>
-      <h2>HTML</h2>
-      HTML is...
-    </article>
+`;
+      }
+      function control() {
+        document.getElementById("control").innerHTML = `
+            <ul>
+                <li><a href="/create">create</a></li>
+                <li><button>delete</button></li>
+            </ul>
+        `;
+      }
+      function article() {
+        document.getElementById("content").innerHTML = `
+        <article>
+           <h2>HTML</h2>
+           HTML is ...
+        </article>
+        `;
+      }
+      subject(); // 각 코드 부품화 하기.
+      TOC();
+      control();
+      article();
+    </script>
   </body>
 </html>
