@@ -90,7 +90,7 @@
             selected_id: action.id,
           });
         }
-        console.log(action, state, newArrState);
+        console.log(action, state, newArrState); // action, 이전 state, 지금 state
         return newArrState;
       }
       const store = Redux.createStore(reducer);
