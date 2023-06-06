@@ -13,6 +13,8 @@
     <div id="control"></div>
     <div id="content"></div>
     <script>
+      // store생성,reducer주입
+
       function subject() {
         document.getElementById("subject").innerHTML = `
             <header>
@@ -27,12 +29,20 @@
         const state = store.getState();
         let i = 0;
         let liTags = "";
+        // store.dispatch(action)  => state변경.
+        // (dispatch로 action정보가 넘어감.) 그럼 다시 store에서 reducer를 호출함.
         while (i < state.contents.length) {
           liTags =
             liTags +
             `
             <li>
-                <a href="${state.contents[i].id}">${state.contents[i].title}</a>
+                <a onclick="
+                event.preventDefault();
+                const action = {type:'CHOICE',id:${state.contents[i].id}};
+                store.dispatch(action)
+                "
+                href="${state.contents[i].id}" 
+                >${state.contents[i].title}</a>
             </li>
             `;
           i++;
@@ -61,20 +71,29 @@
         </article>
         `;
       }
-
       function reducer(state, action) {
+        console.log(state, action);
         if (state === undefined) {
           // 초기값 세팅
           return {
+            selected_id: null, // selected_id의 초기값은 설정되지 않았다.
             contents: [
               { id: 1, title: "HTML", desc: "HTML is ..." },
               { id: 2, title: "CSS", desc: "CSS is .." },
             ],
           };
         }
+        const newState = {};
+        let newArrState;
+        if (action.type === "CHOICE") {
+          newArrState = Object.assign(newState, state, {
+            selected_id: action.id,
+          });
+        }
+        console.log(action, state, newArrState);
+        return newArrState;
       }
-      const store = Redux.createStore(reducer); // store생성,reducer주입
-
+      const store = Redux.createStore(reducer);
       subject(); // 각 코드 부품화 하기.
       TOC();
       control();
