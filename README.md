@@ -162,3 +162,15 @@ green(); // 처음에는 무조건 실행
 요롷게.
 그리고 이것을 `store.subscribe(green)` 이런식으로 store에 구독을 시켜놓으면 state가 바뀔때 마다 통보받기에 그때마다 자신의 모양을 바꿔줄 수 있다.
 따라서 각 컴포넌트는 자신의 일에만 집중할 수 있어 서로간의 의존성을 낮출 수 있다.
+
+---
+
+form 태그 안쪽의 input등에 name을 주었다면 onsubmit시 해당 name을 가지는 태그에 접근할 수 있다.
+
+```js
+this.선택할태그의name.value // =>  해당 name을 가진 태그의 값을 가져올 수 있다.
+// 즉,
+   <input type="text" name="text" placeholder="text"/>
+   // 이 태그의 경우 , 이 태그에  입력한 값에 접근하려고한다면
+   this.text.value // 이렇게 적어주면 되겠다.
+```

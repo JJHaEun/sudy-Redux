@@ -17,12 +17,12 @@
 
       function subject() {
         document.getElementById("subject").innerHTML = `
-            <header>
-            <h1>WEB</h1>
-            Hello, WEB!!
-            </header>
-            
-            `;
+                  <header>
+                  <h1>WEB</h1>
+                  Hello, WEB!!
+                  </header>
+
+                  `;
       }
       function TOC() {
         // table of content의 준말로 목록을 나타낼떼 주로사용하는 말
@@ -35,62 +35,92 @@
           liTags =
             liTags +
             `
-            <li>
-                <a onclick="
-                event.preventDefault();
-                const action = {type:'CHOICE',id:${state.contents[i].id}};
-                store.dispatch(action)
-                "
-                href="${state.contents[i].id}" 
-                >${state.contents[i].title}</a>
-            </li>
-            `;
+                  <li>
+                      <a onclick="
+                      event.preventDefault();
+                      const action = {type:'CHOICE',id:${state.contents[i].id}};
+                      store.dispatch(action)
+                      "
+                      href="${state.contents[i].id}"
+                      >${state.contents[i].title}</a>
+                  </li>
+                  `;
           i++;
         }
         document.getElementById("toc").innerHTML = `
-    <nav>
-      <ol>
-        ${liTags}
-      </ol>
-    </nav>
-`;
+          <nav>
+            <ol>
+              ${liTags}
+            </ol>
+          </nav>
+      `;
       }
       function control() {
         document.getElementById("control").innerHTML = `
-            <ul>
-                <li><a href="/create" onclick="
-                  event.preventDefault();
-                  
-                  ">create</a></li>
-                <li><button>delete</button></li>
-            </ul>
-        `;
+                  <ul>
+                      <li><a href="/create" onclick="
+                        event.preventDefault();
+
+                        ">create</a></li>
+                      <li><button>delete</button></li>
+                  </ul>
+              `;
       }
       function article() {
         const state = store.getState();
-        let i = 0;
-        let articleTitle, articleDesc;
-        while (i < state.contents.length) {
-          if (state.contents[i].id === state.selected_id) {
-            // id와 선택된것이 같다면
-            articleTitle = state.contents[i].title;
-            articleDesc = state.contents[i].desc;
-            break;
+        if (state.mode === "create") {
+          document.getElementById("content").innerHTML = `
+                        <article>
+                         <form onsubmit="
+                         event.preventDefault();
+                         const title = this.text.value
+                         const desc = this.description.value
+                         store.dispatch({
+                          type:'CREATE',
+                          title,
+                          desc,
+                         })
+                         ">
+                          <p>
+                            <input type="text" name="text" placeholder="text"/>
+                            </p>
+                            <p>
+                              <textarea name="description" placeholder="description"></textarea>
+                              </p>
+                              <p>
+                                <button>submit</button>
+                                  </p>
+                          </form>
+                        </article>
+                        `;
+        } else if (state.mode === "read") {
+          let i = 0;
+          let articleTitle, articleDesc;
+          while (i < state.contents.length) {
+            if (state.contents[i].id === state.selected_id) {
+              // id와 선택된것이 같다면
+              articleTitle = state.contents[i].title;
+              articleDesc = state.contents[i].desc;
+              break;
+            }
+            i++;
           }
-          i++;
+          document.getElementById("content").innerHTML = `
+                        <article>
+                          <h2>${articleTitle}</h2>
+                          ${articleDesc}
+                        </article>
+                        `;
         }
-        document.getElementById("content").innerHTML = `
-        <article>
-           <h2>${articleTitle}</h2>
-           ${articleDesc}
-        </article>
-        `;
       }
       function reducer(state, action) {
         console.log(state, action);
         if (state === undefined) {
           // 초기값 세팅
           return {
+            // id값을 추가해주기 위해 max_id생성(마지막 최고 아이디)
+            max_id: 2,
+            mode: "create", // 초기 mode를 read로 해놓아 글 보는 상태라고 해줌.
             selected_id: 1, // selected_id의 초기값은 설정되지 않았다.
             contents: [
               { id: 1, title: "HTML", desc: "HTML is ..." },
@@ -104,6 +134,21 @@
           newArrState = Object.assign(newState, state, {
             selected_id: action.id,
           });
+        } else if (action.type === "CREATE") {
+          // concat에 아무런 인자를 주지 않으면 기존 배열 복제 가능.
+          let newContents = state.contents.concat(); // 기존것 복사
+          let newMaxId = state.max_id + 1;
+          newContents.push({
+            id: newMaxId,
+            title: action.title,
+            desc: action.desc,
+          });
+          newArrState = Object.assign(newState, state, {
+            // state변경하기(업데이트 하기)
+            max_id: newMaxId,
+            contents: newContents,
+            mode: "read",
+          });
         }
         console.log(action, state, newArrState); // action, 이전 state, 지금 state
         return newArrState;
@@ -115,6 +160,8 @@
       // dispatch가 subscribe하는 함수들을 호출하기에  그에 따라 render가 동작해
       // state값을 참조하여 ui를 새로 그림.
 
+      // 글 생성 후 목록갱신
+      store.subscribe(TOC);
       subject(); // 각 코드 부품화 하기.
       TOC();
       control();
