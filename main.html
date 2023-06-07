@@ -60,9 +60,17 @@
                   <ul>
                       <li><a href="/create" onclick="
                         event.preventDefault();
-
+                        store.dispatch({
+                          type:'CHANGE_MODE',
+                          mode:'create',
+                        })
                         ">create</a></li>
-                      <li><button>delete</button></li>
+                      <li><button onclick="
+                        store.dispatch({
+                          type:'DELETE',
+
+                        })
+                        ">delete</button></li>
                   </ul>
               `;
       }
@@ -111,6 +119,13 @@
                           ${articleDesc}
                         </article>
                         `;
+        } else if (state.mode === "welcome") {
+          document.getElementById("content").innerHTML = `
+                        <article>
+                          <h2>Welcome!! </h2>
+                            Hello, Redux!!!
+                        </article>
+                        `;
         }
       }
       function reducer(state, action) {
@@ -133,6 +148,7 @@
         if (action.type === "CHOICE") {
           newArrState = Object.assign(newState, state, {
             selected_id: action.id,
+            mode: "read",
           });
         } else if (action.type === "CREATE") {
           // concat에 아무런 인자를 주지 않으면 기존 배열 복제 가능.
@@ -148,6 +164,21 @@
             max_id: newMaxId,
             contents: newContents,
             mode: "read",
+          });
+        } else if (action.type === "DELETE") {
+          let contentsNew = [];
+          for (let i = 0; i < state.contents.length; i++) {
+            if (state.selected_id !== state.contents[i].id) {
+              contentsNew.push(state.contents[i]);
+            }
+          }
+          newArrState = Object.assign(newState, state, {
+            contents: contentsNew,
+            mode: "welcome",
+          });
+        } else if (action.type === "CHANGE_MODE") {
+          newArrState = Object.assign(newState, state, {
+            mode: action.mode,
           });
         }
         console.log(action, state, newArrState); // action, 이전 state, 지금 state
