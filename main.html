@@ -58,16 +58,31 @@
       function control() {
         document.getElementById("control").innerHTML = `
             <ul>
-                <li><a href="/create">create</a></li>
+                <li><a href="/create" onclick="
+                  event.preventDefault();
+                  
+                  ">create</a></li>
                 <li><button>delete</button></li>
             </ul>
         `;
       }
       function article() {
+        const state = store.getState();
+        let i = 0;
+        let articleTitle, articleDesc;
+        while (i < state.contents.length) {
+          if (state.contents[i].id === state.selected_id) {
+            // id와 선택된것이 같다면
+            articleTitle = state.contents[i].title;
+            articleDesc = state.contents[i].desc;
+            break;
+          }
+          i++;
+        }
         document.getElementById("content").innerHTML = `
         <article>
-           <h2>HTML</h2>
-           HTML is ...
+           <h2>${articleTitle}</h2>
+           ${articleDesc}
         </article>
         `;
       }
@@ -76,7 +91,7 @@
         if (state === undefined) {
           // 초기값 세팅
           return {
-            selected_id: null, // selected_id의 초기값은 설정되지 않았다.
+            selected_id: 1, // selected_id의 초기값은 설정되지 않았다.
             contents: [
               { id: 1, title: "HTML", desc: "HTML is ..." },
               { id: 2, title: "CSS", desc: "CSS is .." },
@@ -94,6 +109,12 @@
         return newArrState;
       }
       const store = Redux.createStore(reducer);
+      // store의 값이 바뀌었을때마다 article즉, 본문이 있는 함수가 실행되도록 하기
+      //store.subscribe에 article이라는 함수를 등록해줌
+      store.subscribe(article);
+      // dispatch가 subscribe하는 함수들을 호출하기에  그에 따라 render가 동작해
+      // state값을 참조하여 ui를 새로 그림.
+
       subject(); // 각 코드 부품화 하기.
       TOC();
       control();
